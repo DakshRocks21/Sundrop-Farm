@@ -1,0 +1,6 @@
+Money *:* 8
+Energy *:* 5
+Day *:* 3
+Bag *:* LET:1
+Seed Prices *:* LET:4,POT:8,CAU:14
+Farm *:* None,None,POT:1,None,None,|None,None,None,None,None,|None,CAU:4,House,LET:0,None,|None,None,LET:1,LET:1,None,|None,None,None,None,None,|
