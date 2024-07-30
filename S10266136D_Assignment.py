@@ -332,34 +332,39 @@ def in_farm(game_vars, farm):
                 energy -= 1
                 
         elif action == 'P' and can_plant:
-            print("What do you wish to plant?")
-            print(f"-----------------------------------------------------")
-            print(f"    Seed              Days to Grow  Crop Price  Available")
-            print(f"-----------------------------------------------------")
-            available_seeds = [seed for seed, qty in seed_bag.items() if qty > 0]
-            for index, seed in enumerate(available_seeds, 1):
-                seed_info = seeds[seed]
-                print(f" {index}) {seed_info['name']:<21}{seed_info['growth_time']:<13}{seed_info['crop_price']:<10}{seed_bag[seed]:^4}")
-            print("\n 0) Leave")
-            print("-----------------------------------------------------")
-            seed_choice = input("Your choice? ").strip()
-            
-            if seed_choice.isdigit():
-                seed_choice = int(seed_choice)
-                if seed_choice == 0:
-                    print("Leaving planting menu.")
-                elif 1 <= seed_choice <= len(available_seeds):
-                    selected_seed = available_seeds[seed_choice - 1]
-                    farm[farmer_row][farmer_col] = [selected_seed, seeds[selected_seed]['growth_time']]
-                    seed_bag[selected_seed] -= 1
-                    energy -= 1
-                    if seed_bag[selected_seed] == 0:
-                        del seed_bag[selected_seed]
-                    # print(f"Planted {seeds[selected_seed]['name']}!")
+            while True:
+                print("What do you wish to plant?")
+                print(f"-----------------------------------------------------")
+                print(f"    Seed              Days to Grow  Crop Price  Available")
+                print(f"-----------------------------------------------------")
+                available_seeds = [seed for seed, qty in seed_bag.items() if qty > 0]
+                for index, seed in enumerate(available_seeds, 1):
+                    seed_info = seeds[seed]
+                    print(f" {index}) {seed_info['name']:<21}{seed_info['growth_time']:<13}{seed_info['crop_price']:<10}{seed_bag[seed]:^4}")
+                print("\n 0) Leave")
+                print("-----------------------------------------------------")
+                seed_choice = input("Your choice? ").strip()
+                
+                if seed_choice.isdigit():
+                    seed_choice = int(seed_choice)
+                    if seed_choice == 0:
+                        print("Leaving planting menu.")
+                        break
+                    elif 1 <= seed_choice <= len(available_seeds):
+                        selected_seed = available_seeds[seed_choice - 1]
+                        farm[farmer_row][farmer_col] = [selected_seed, seeds[selected_seed]['growth_time']]
+                        seed_bag[selected_seed] -= 1
+                        energy -= 1
+                        if seed_bag[selected_seed] == 0:
+                            del seed_bag[selected_seed]
+                        break
+                        # print(f"Planted {seeds[selected_seed]['name']}!")
+                    else:
+                        print("Invalid choice!")
+                        continue
                 else:
-                    print("Invalid choice!")
-            else:
-                print("Invalid input!")
+                    print("Invalid input!")
+                    continue
                 
         elif action == 'H' and can_harvest:
             seed_choice, _ = farm[farmer_row][farmer_col]
