@@ -307,14 +307,13 @@ def in_farm(game_vars, farm):
         
         if not validate_choice(action, ['W', 'A', 'S', 'D', 'P', 'H', 'R']):
             print("Invalid choice!")
+        elif action == 'R':
+            print("Returning to town...")
+            break    
         
         elif energy <= 0:
             print("You’re too tired. You should get back to town.")
             continue
-    
-        elif action == 'R':
-            print("Returning to town...")
-            break
         
         elif action == 'W' and farmer_row > 0:
                 farmer_row -= 1
@@ -454,9 +453,7 @@ def end_day(game_vars):
             exit()
     else:
         # Continue the game
-        print("It's a new day!")
-        #TODO: Check with lecturer if this is allowed
-        #print("It's a new day! Crop prices have been updated.")
+        print("It's a new day! Crop prices have been updated.")
 
 #----------------------------------------------------------------------
 # save_highscore_top_5(name, profit)
@@ -518,6 +515,7 @@ def save_game(game_vars, farm):
                     farm_data += f"{col[0]}:{col[1]},"
                 else:
                     farm_data += col
+            farm_data = farm_data[:-1]
             farm_data += "|"
         f.write(f"Farm *:* {farm_data}\n")
         
@@ -534,6 +532,10 @@ def load_game(game_vars, farm):
         return game_vars, farm
     
     with open("savegame.txt", "r") as f:
+        # Read the file line by line
+        # ALL values are "key *:* value"
+        # For example, "Money *:* 20"
+        # Farm is a 5x5 grid, each cell is separated by a comma
         for line in f:
             if line.startswith("Money"):
                 game_vars['money'] = int(line.split("*:*")[1])
@@ -591,7 +593,7 @@ def game():
             save_game(game_vars, farm)
         elif choice == 0:
             print("Goodbye!")
-            break
+            exit()
     
 print("----------------------------------------------------------")
 print("Welcome to Sundrop Farm!")
@@ -602,33 +604,34 @@ print("You might even be able to make a little profit.")
 print("How successful will you be?")
 print("----------------------------------------------------------")
 
-print("""1) Start a new game
+while True:
+    print("""1) Start a new game
 2) Show High Scores
 3) Load your saved game
 
 0) Exit Game""")
 
-choice = input("Your choice? ")
+    choice = input("Your choice? ")
 
-if validate_choice(choice, ['1', '2', '3', '0']):
-    choice = int(choice)
-else:
-    print("Invalid choice. Please choose a valid option.")
-    exit()
-
-if choice == 1:
-    game()
-elif choice == 2:
-    scores = load_highscores()
-    if not scores:
-        print("No high scores found.")
+    if validate_choice(choice, ['1', '2', '3', '0']):
+        choice = int(choice)
     else:
-        print("High Scores:")
-        for i, score in enumerate(scores, 1):
-            print(f"{i}. {score[0]}: ${score[1]}")
-elif choice == 3:
-    game_vars, farm = load_game(game_vars, farm)
-    game()
-elif choice == 0:
-    print("Goodbye!")
-    exit()
+        print("Invalid choice. Please choose a valid option.\n")
+        continue
+
+    if choice == 1:
+        game()
+    elif choice == 2:
+        scores = load_highscores()
+        if not scores:
+            print("No high scores found.")
+        else:
+            print("High Scores:")
+            for i, score in enumerate(scores, 1):
+                print(f"{i}. {score[0]}: ${score[1]}")
+    elif choice == 3:
+        game_vars, farm = load_game(game_vars, farm)
+        game()
+    elif choice == 0:
+        print("Goodbye!")
+        exit()
