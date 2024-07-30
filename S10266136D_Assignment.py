@@ -21,7 +21,6 @@ Bonus Features:
                         I used this function to exit the program.
 """
 
-import os
 import random 
 
 # Game variables
@@ -305,7 +304,13 @@ def in_farm(game_vars, farm):
         print_status(plant=can_plant, harvest=can_harvest)
         action = input("Your choice? ").strip().upper()
         
-        if not validate_choice(action, ['W', 'A', 'S', 'D', 'P', 'H', 'R']):
+        validate_choice_list = ['W', 'A', 'S', 'D', 'R']
+        if can_plant:
+            validate_choice_list.append('P')
+        if can_harvest:
+            validate_choice_list.append('H')
+            
+        if not validate_choice(action, validate_choice_list):
             print("Invalid choice!")
         elif action == 'R':
             print("Returning to town...")
@@ -430,7 +435,7 @@ def end_day(game_vars):
     # Randomize crop prices after each day
     for seed in seed_list:
         lower_bound, upper_bound = seeds[seed]['crop_price_range']
-        new_price = random.randint(upper_bound, lower_bound)
+        new_price = random.randint(lower_bound, upper_bound)
         seeds[seed]['crop_price'] = new_price
 
             
@@ -489,10 +494,12 @@ def save_highscore_top_5(name, profit):
 #     Returns a list of the high scores 
 #----------------------------------------------------------------------
 def load_highscores():
-    if not os.path.exists("highscores.txt"):
-        return []
+    with open("highscores.txt", "a") as f:
+        pass
     with open("highscores.txt", "r") as f:
         scores = [line.strip().split(" ") for line in f]
+    if not scores:
+        return []
     return scores
 
 #----------------------------------------------------------------------
@@ -532,16 +539,19 @@ def save_game(game_vars, farm):
 #----------------------------------------------------------------------
 def load_game(game_vars, farm):
     # Check if file exists
-    if not os.path.exists("savegame.txt"):
-        print("No saved game found.")
-        return game_vars, farm
-    
+    with open("savegame.txt", "a") as f:
+        pass
     with open("savegame.txt", "r") as f:
         # Read the file line by line
         # ALL values are "key *:* value"
         # For example, "Money *:* 20"
         # Farm is a 5x5 grid, each cell is separated by a comma
-        for line in f:
+        
+        lines = f.readlines()
+        if lines == []:
+            print("No saved game found.")
+            return game_vars, farm
+        for line in lines:
             if line.startswith("Money"):
                 game_vars['money'] = int(line.split("*:*")[1])
             elif line.startswith("Energy"):
@@ -551,7 +561,10 @@ def load_game(game_vars, farm):
             elif line.startswith("Bag"):
                 bag_items = line.split("*:*")[1].strip().split(",")
                 for item in bag_items:
-                    key, value = item.split(":")
+                    values = item.split(":")
+                    if len(values) == 1:
+                        continue
+                    key, value = values
                     game_vars['bag'][key] = int(value)
             elif line.startswith("Seed Prices"):
                 seed_prices = line.split("*:*")[1].strip().split(",")
