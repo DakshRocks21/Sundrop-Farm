@@ -59,11 +59,15 @@ seeds = {
 }
 
 # Farm layout, a 5x5 grid where the player starts at (2,2) at the House
-farm = [ [None, None, None, None, None],
-         [None, None, None, None, None],
-         [None, None, 'House', None, None],
-         [None, None, None, None, None],
-         [None, None, None, None, None] ]
+farm = [ [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, 'House', None, None,None, None],
+         [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, None, None, None,None, None],
+         [None, None, None, None, None, None, None,None, None]]
 
 #-----------------------------------------------------------------------
 # display_town_options(game_vars)
