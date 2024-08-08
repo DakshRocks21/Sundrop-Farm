@@ -1,5 +1,3 @@
-# Daksh Thapar - CSF03
-
 """
 About the code:
 
